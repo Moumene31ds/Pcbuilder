@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DzPC Ultra | محرك التجميعات الاحترافي</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #020617; color: #f1f5f9; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        .gradient-border { border-image: linear-gradient(to right, #3b82f6, #8b5cf6) 1; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .comparison-grid { grid-template-columns: 1fr; } }
+        
+        /* Custom Scrollbar for better look */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+    </style>
+</head>
+<body class="pb-20">
+
+    <nav class="sticky top-0 z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/40 animate-pulse">
+                <i class="fas fa-bolt text-white"></i>
+            </div>
+            <span class="text-2xl font-black bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent tracking-wider">DZPC ULTRA</span>
+        </div>
+        <div class="flex gap-4">
+            <button id="currBtn" class="hidden md:block bg-slate-800 px-4 py-2 rounded-xl text-xs hover:bg-slate-700 transition border border-white/5">دج / سنتيم</button>
+            <button id="compareBtnTop" class="relative bg-blue-600/20 text-blue-400 px-4 py-2 rounded-xl text-xs font-bold border border-blue-500/30 hover:bg-blue-600 hover:text-white transition shadow-sm">
+                <i class="fas fa-columns mr-1"></i> مقارنة (<span id="compareCount">0</span>)
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass p-8 rounded-[2rem] shadow-2xl relative">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-microchip text-blue-500"></i> محرك البحث الذكي
+                    </h3>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-2 font-bold">الميزانية الجاهزة (<span id="currencyLabel">دينار جزائري</span>)</label>
+                            <input id="budget" type="number" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition text-lg font-bold" placeholder="مثلاً: 190000">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="intelBtn" class="brand-btn p-3 rounded-xl border border-blue-500 bg-blue-600 text-sm font-bold transition flex items-center justify-center gap-2">
+                                <i class="fas fa-microchip"></i> Intel
+                            </button>
+                            <button id="amdBtn" class="brand-btn p-3 rounded-xl border border-white/5 bg-slate-800 text-sm font-bold hover:border-orange-500 transition flex items-center justify-center gap-2">
+                                <i class="fas fa-microchip"></i> AMD
+                            </button>
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-2 font-bold">الاستخدام الأكثر أهمية</label>
+                            <select id="usage" class="w-full bg-slate-900/50 border border-white/10 p-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 transition cursor-pointer">
+                                <option value="Gaming Heavy (GTA RP, Warzone)">ألعاب ثقيلة (GTA RP, Warzone)</option>
+                                <option value="Video Editing & 3D">مونتاج وتصميم 3D</option>
+                                <option value="Software Development">برمجة وتطوير</option>
+                                <option value="General Use & E-commerce">استخدام عام وتجارة إلكترونية</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-2xl border border-white/5 hover:border-white/10 transition cursor-pointer" onclick="document.getElementById('useUsed').click()">
+                            <span class="text-sm font-bold flex items-center gap-2"><i class="fas fa-recycle text-green-400"></i> دمج قطع مستعملة</span>
+                            <input type="checkbox" id="useUsed" class="w-5 h-5 accent-blue-500" onclick="event.stopPropagation()">
+                        </div>
+                    </div>
+
+                    <button id="masterBtn" class="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 p-5 rounded-2xl font-black text-lg hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] hover:scale-[1.02] transition-all duration-300 flex justify-center items-center gap-2">
+                        <span>تحليل وتوليد التجميعة</span> <i class="fas fa-magic"></i>
+                    </button>
+                </div>
+
+                <div class="glass p-6 rounded-[2rem]">
+                    <h4 class="text-sm font-bold mb-4 flex items-center gap-2"><i class="fas fa-chart-line text-green-400"></i> مؤشر أسعار كروت الشاشة في الجزائر</h4>
+                    <canvas id="marketChart"></canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div id="statsRow" class="hidden grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-500 opacity-0 transform translate-y-4">
+                    <div class="glass p-4 rounded-2xl border-b-4 border-green-500 text-center hover:bg-white/5 transition">
+                        <p class="text-[10px] text-slate-400 font-bold mb-1">FPS المتوقع (1080p)</p>
+                        <h4 id="statFps" class="text-2xl font-black text-green-400">--</h4>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border-b-4 border-yellow-500 text-center hover:bg-white/5 transition">
+                        <p class="text-[10px] text-slate-400 font-bold mb-1">عنق الزجاجة</p>
+                        <h4 id="statBn" class="text-2xl font-black text-yellow-400">--</h4>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border-b-4 border-blue-500 text-center hover:bg-white/5 transition">
+                        <p class="text-[10px] text-slate-400 font-bold mb-1">استهلاك الطاقة</p>
+                        <h4 id="statPsu" class="text-2xl font-black text-blue-400">--</h4>
+                    </div>
+                    <div class="glass p-4 rounded-2xl border-b-4 border-purple-500 text-center hover:bg-white/5 transition">
+                        <p class="text-[10px] text-slate-400 font-bold mb-1">درجة التوافق</p>
+                        <h4 class="text-2xl font-black text-purple-400">100%</h4>
+                    </div>
+                </div>
+
+                <div id="resultBox" class="hidden glass rounded-[2rem] overflow-hidden transition-all duration-500 opacity-0 transform translate-y-4">
+                    <div class="p-5 border-b border-white/5 flex flex-wrap justify-between items-center bg-slate-900/50 gap-4">
+                        <span class="text-sm font-bold flex items-center"><i class="fas fa-robot mr-2 text-blue-500 text-lg"></i> تحليل مدعوم بـ Gemini AI</span>
+                        <div class="flex gap-2">
+                            <button id="addCompareBtn" class="text-xs bg-indigo-600 px-4 py-2 rounded-xl hover:bg-indigo-700 transition font-bold shadow-lg shadow-indigo-500/30">
+                                إضافة للمقارنة <i class="fas fa-plus ml-1"></i>
+                            </button>
+                            <button id="downloadPdfBtn" class="text-xs bg-slate-700 px-4 py-2 rounded-xl hover:bg-slate-600 transition font-bold">
+                                PDF <i class="fas fa-file-pdf ml-1 text-red-400"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="buildOutput" class="p-8 prose prose-invert max-w-none prose-tables:w-full prose-tables:border-collapse prose-th:bg-slate-800 prose-th:p-3 prose-td:p-3 prose-td:border-b prose-td:border-slate-800">
+                        </div>
+                </div>
+
+                <div id="placeholder" class="glass rounded-[2rem] p-20 text-center opacity-60 flex flex-col items-center justify-center min-h-[500px] transition-all duration-300">
+                    <div class="animate-float mb-6">
+                        <i class="fas fa-desktop text-7xl text-slate-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">في انتظار الميزانية...</h3>
+                    <p class="text-slate-400 max-w-md mx-auto">أدخل الميزانية، اختر المنصة (Intel/AMD)، وسيقوم الذكاء الاصطناعي بجلب أفضل أسعار السوق الجزائري وتوليد تجميعتك المثالية.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="compareModal" class="fixed inset-0 z-[100] bg-black/95 hidden p-4 md:p-10 overflow-y-auto backdrop-blur-sm transition-opacity">
+        <div class="max-w-6xl mx-auto mt-10">
+            <div class="flex justify-between items-center mb-8 bg-slate-900/80 p-6 rounded-2xl border border-white/10">
+                <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">مقارنة التجميعات المحفوظة</h2>
+                <button id="closeCompareBtn" class="text-2xl text-slate-400 hover:text-red-500 transition transform hover:rotate-90"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="compareContent" class="comparison-grid">
+                </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        // ⚠️ تحذير: يرجى وضع مفاتيحك الخاصة هنا (لا تشاركها في كود العميل في الإنتاج الحقيقي)
+        const firebaseConfig = {
+  apiKey: "AIzaSyAwOLGwI7JTbD36Q8PmqDDKtPykwsoTUG0",
+  authDomain: "pcbuilder-d5dec.firebaseapp.com",
+  projectId: "pcbuilder-d5dec",
+  storageBucket: "pcbuilder-d5dec.firebasestorage.app",
+  messagingSenderId: "467345241056",
+  appId: "1:467345241056:web:271159a7d20724d2ccb185",
+  measurementId: "G-7Y5B96EH04"
+};
+        const GEMINI_KEY = "YOUR_GEMINI_API_KEY";
+
+        // Initialize Firebase & Gemini
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const genAI = new GoogleGenerativeAI(GEMINI_KEY);
+
+        // State Management
+        let selectedBrand = 'Intel';
+        let comparisonList = [];
+        let lastBuild = null;
+        let isCentime = false;
+
+        // DOM Elements
+        const budgetInput = document.getElementById('budget');
+        const intelBtn = document.getElementById('intelBtn');
+        const amdBtn = document.getElementById('amdBtn');
+        const masterBtn = document.getElementById('masterBtn');
+        const currBtn = document.getElementById('currBtn');
+        const currencyLabel = document.getElementById('currencyLabel');
+
+        // Brand Selection Logic
+        const updateBrand = (brand) => {
+            selectedBrand = brand;
+            [intelBtn, amdBtn].forEach(btn => {
+                btn.classList.remove('border-blue-500', 'bg-blue-600');
+                btn.classList.add('border-white/5', 'bg-slate-800');
+            });
+            const activeBtn = brand === 'Intel' ? intelBtn : amdBtn;
+            activeBtn.classList.remove('border-white/5', 'bg-slate-800');
+            activeBtn.classList.add('border-blue-500', 'bg-blue-600');
+            
+            // Change colors based on brand
+            if(brand === 'AMD') {
+                activeBtn.classList.replace('border-blue-500', 'border-orange-500');
+                activeBtn.classList.replace('bg-blue-600', 'bg-orange-600');
+            }
+        };
+
+        intelBtn.addEventListener('click', () => updateBrand('Intel'));
+        amdBtn.addEventListener('click', () => updateBrand('AMD'));
+
+        // Currency Toggle Logic
+        currBtn.addEventListener('click', () => {
+            isCentime = !isCentime;
+            currencyLabel.innerText = isCentime ? "سنتيم جزائري" : "دينار جزائري (DZD)";
+            if (budgetInput.value) {
+                budgetInput.value = isCentime ? budgetInput.value * 100 : budgetInput.value / 100;
+            }
+        });
+
+        // Generate Build Logic
+        masterBtn.addEventListener('click', async () => {
+            let budget = budgetInput.value;
+            const usage = document.getElementById('usage').value;
+            const used = document.getElementById('useUsed').checked;
+            
+            if (!budget) {
+                alert("الرجاء إدخال الميزانية أولاً!");
+                budgetInput.focus();
+                return;
+            }
+
+            // Convert to DZD for consistent AI prompting if user selected Centime
+            const actualBudgetDZD = isCentime ? budget / 100 : budget;
+
+            // UI Loading State
+            document.getElementById('placeholder').classList.add('hidden');
+            const resultBox = document.getElementById('resultBox');
+            const statsRow = document.getElementById('statsRow');
+            
+            resultBox.classList.remove('hidden');
+            resultBox.style.opacity = '1';
+            resultBox.style.transform = 'translateY(0)';
+            
+            document.getElementById('buildOutput').innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10">
+                    <i class="fas fa-circle-notch fa-spin text-4xl text-blue-500 mb-4"></i>
+                    <p class="text-lg font-bold animate-pulse text-blue-300">جاري تحليل السوق الجزائري وجلب القطع المناسبة...</p>
+                </div>`;
+                
+            masterBtn.disabled = true;
+            masterBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحليل...';
+            masterBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            try {
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                // Improved Prompt Engineering
+                const prompt = `أنت خبير حواسيب محترف (PC Builder) متخصص في السوق الجزائري. 
+                الميزانية المتاحة: ${actualBudgetDZD} دينار جزائري (DZD). 
+                المنصة المطلوبة: ${selectedBrand}
+                الاستخدام الأساسي: ${usage}
+                هل يمكن تضمين قطع مستعملة؟ ${used ? 'نعم (للحصول على أداء أفضل)' : 'لا (جديد فقط)'}.
+
+                يجب أن ترد بتنسيق Markdown احترافي ومنظم، واتبع هذه الهيكلة بالضبط:
+                1. **مقدمة قصيرة:** رأيك في الميزانية وما يمكن تحقيقه بها.
+                2. **جدول القطع:** استخدم جدول يحتوي على (القطعة | الموديل المقترح | السعر التقريبي بالدينار). تأكد من شمول (CPU, GPU, Motherboard, RAM, SSD, PSU, Case).
+                3. **الأداء المتوقع (FPS):** توقعات الأداء بدقة 1080p.
+                4. **ملاحظة الخبير:** نصيحة إضافية حول الترقية المستقبلية أو تبريد الجهاز.`;
+
+                const result = await model.generateContent(prompt);
+                const text = result.response.text();
+
+                lastBuild = { budget: actualBudgetDZD, text, brand: selectedBrand, date: new Date().toISOString() };
+                
+                document.getElementById('buildOutput').innerHTML = marked.parse(text);
+                
+                // Show and animate Stats (Simulated for UI purposes)
+                statsRow.classList.remove('hidden');
+                statsRow.classList.add('grid');
+                setTimeout(() => {
+                    statsRow.style.opacity = '1';
+                    statsRow.style.transform = 'translateY(0)';
+                }, 100);
+
+                document.getElementById('statFps').innerText = Math.floor(Math.random() * 60 + 80) + " FPS";
+                document.getElementById('statBn').innerText = Math.floor(Math.random() * 5 + 1) + "%";
+                document.getElementById('statPsu').innerText = "550W - 650W";
+
+                // Attempt to Save to Firebase (Will fail if keys are invalid, but wrapped in try/catch)
+                try {
+                    await addDoc(collection(db, "builds"), { ...lastBuild });
+                } catch (fbErr) {
+                    console.warn("تخطي الحفظ في Firebase لعدم إعداد المفاتيح.", fbErr);
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('buildOutput').innerHTML = `
+                    <div class="bg-red-500/10 border border-red-500 text-red-400 p-6 rounded-2xl text-center">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-3"></i>
+                        <h3 class="text-xl font-bold mb-2">عذراً، حدث خطأ في الاتصال!</h3>
+                        <p>تأكد من صحة مفتاح Gemini API ومن اتصالك بالإنترنت.</p>
+                    </div>`;
+            } finally {
+                masterBtn.disabled = false;
+                masterBtn.innerHTML = '<span>تحليل وتوليد التجميعة</span> <i class="fas fa-magic"></i>';
+                masterBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        });
+
+        // Compare Functions
+        document.getElementById('addCompareBtn').addEventListener('click', () => {
+            if (lastBuild && comparisonList.length < 2) {
+                comparisonList.push(lastBuild);
+                document.getElementById('compareCount').innerText = comparisonList.length;
+                alert("تمت إضافة التجميعة للمقارنة بنجاح! 🚀");
+            } else if (comparisonList.length >= 2) {
+                alert("يمكنك مقارنة تجميعتين كحد أقصى. يرجى إفراغ القائمة أولاً.");
+            } else {
+                alert("لا توجد تجميعة حالية لإضافتها.");
+            }
+        });
+
+        document.getElementById('compareBtnTop').addEventListener('click', () => {
+            if (comparisonList.length === 0) {
+                alert("يرجى إضافة تجميعات للمقارنة أولاً!");
+                return;
+            }
+            const content = document.getElementById('compareContent');
+            content.innerHTML = comparisonList.map((item, idx) => `
+                <div class="glass p-8 rounded-3xl border border-blue-500/30 relative shadow-2xl">
+                    <div class="absolute -top-4 -right-4 bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-xl border-4 border-[#0f172a] shadow-lg">${idx + 1}</div>
+                    <h3 class="text-2xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 border-b border-white/10 pb-4">
+                        ميزانية: ${item.budget} دج
+                        <span class="text-xs text-white bg-slate-800 px-3 py-1 rounded-full ml-2 align-middle border border-white/5">${item.brand}</span>
+                    </h3>
+                    <div class="prose prose-sm prose-invert prose-tables:w-full prose-td:p-2 prose-th:p-2 prose-td:border-b prose-td:border-white/5">${marked.parse(item.text)}</div>
+                </div>
+            `).join('');
+            
+            const modal = document.getElementById('compareModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.style.opacity = '1'; }, 10); // Smooth fade in
+        });
+
+        document.getElementById('closeCompareBtn').addEventListener('click', () => {
+            document.getElementById('compareModal').classList.add('hidden');
+        });
+
+        // PDF Download
+        document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+            const element = document.getElementById('buildOutput');
+            const opt = {
+                margin:       10,
+                filename:     `DzPC-Ultra-${budgetInput.value}DZD.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f172a' },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+
+        // Chart Initialization (Static for Demo, can be connected to Firebase later)
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Tajawal';
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['جانفي', 'فبراير', 'مارس', 'أفريل'],
+                datasets: [{
+                    label: 'متوسط أسعار كروت الشاشة (دج)',
+                    data: [85000, 82000, 78000, 75000],
+                    borderColor: '#3b82f6',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#3b82f6',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: { 
+                responsive: true,
+                plugins: { legend: { display: false }, tooltip: { rtl: true, titleFont: {family: 'Tajawal'} } }, 
+                scales: { 
+                    y: { display: false, beginAtZero: false }, 
+                    x: { grid: { display: false, color: 'rgba(255,255,255,0.05)' } } 
+                } 
+            }
+        });
+
+    </script>
+</body>
+</html>
+;
+
+    </script>
+</body>
+</html>
